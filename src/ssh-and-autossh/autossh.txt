@@ -1,0 +1,5 @@
+AUTOSSH_LOGFILE=autossh.log AUTOSSH_PATH=~/ssh autossh -M 0 -N  -R0:127.0.0.1:22 bxyzxyza@fedora.unix-center.net
+
+autossh -M 0 -i ~/.ssh/.id_dsa -N -R0:127.0.0.1:22 ccgoo@ip
+
+-o ExitOnForwardFailure=yes ServerAliveInterval=15 #ServerAliveCountMax=3

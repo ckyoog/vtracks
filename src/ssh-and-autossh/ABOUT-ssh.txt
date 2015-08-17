@@ -1,0 +1,13 @@
+
+Can upload pub key.
+$ autossh -M 0 -N -i .ssh/.id_dsa -R0:127.0.0.1:22 ccgoo@123.117.187.6
+
+Can not upload pub key, but support `password' login (not `keyboard interactive')
+$ AUTOSSH_LOGFILE=autossh.log AUTOSSH_PATH=~/ssh autossh -M 0 -N  -R0:127.0.0.1:22 bxyzxyza@fedora.unix-center.net
+
+~/ssh is a shell script, its content is as following:
+	#!/bin/sh
+	sshpass -f ~/sshpass ssh "$@"
+
+In ~/sshpass, password is saved.
+
