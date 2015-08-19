@@ -37,7 +37,7 @@ GPGUSER=${TTYUSER}
 #	mostly it's where the cmd is, and can be omitted when cmd is in PATH
 chroot-runcmd()
 {
-	chroot $1 /bin/bash -c "cd $3 && $2"
+	chroot $1 /bin/bash -l -c "cd $3 && $2"
 }
 
 prepare()
