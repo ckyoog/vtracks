@@ -8,9 +8,11 @@ if [ $THISDIR != $PWD ]; then
 	exit 1
 fi
 # Get super user privilege by sudo
+[ `id -u` = 0 -a "$1" != RoOt ] || {
 [ "$1" != RoOt ] && { exec sudo $0 RoOt "$@" || exit; }
 [ `id -u` != 0 ] && { echo need root privilege >&2; exit 1; }
 shift
+}
 
 
 CHROOTCMD="chroot . /bin/bash -l"
