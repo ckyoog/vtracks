@@ -10,14 +10,10 @@ for e in $EXCL; do
 done
 EXCL_PATTERN="$p"
 
-# `time' is a keyword, so it doesn't work if expanded from a variable.
-# so I use `time' always, but use TIMEFORMAT to control it display time
-# info or not.
-#TIME=${TIMESTATS:+time}
-[ x$TIMESTATS != x1 ] && TIMEFORMAT=
+TIME=${TIMESTATS:+time}
 
 if [ "$EXCL_PATTERN" ]; then
-	time ./filesum.sh $INCL | sed -r '\@'"$EXCL_PATTERN"'@d' | sort -k2
+	eval $TIME ./filesum.sh \$INCL | sed -r '\@'"$EXCL_PATTERN"'@d' | sort -k2
 else
-	time ./filesum.sh $INCL | sort -k2
+	eval $TIME ./filesum.sh \$INCL | sort -k2
 fi
