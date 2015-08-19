@@ -64,7 +64,7 @@ verify()
 	unxz $what-sum.xz
 	mv $what-sum /tmp/$what-sum.ref
 
-	chroot-runcmd $NEWROOT "TIMESTATS=$TIMESTATS ./$what-sum.sh" $CHROOT_SCRIPTDIR
+	chroot-runcmd $NEWROOT ./$what-sum.sh $CHROOT_SCRIPTDIR
 	mv $what-sum /tmp/$what-sum.cur
 	diff /tmp/$what-sum.ref /tmp/$what-sum.cur -q
 	echo "=== ${what^^} VERSION Verification OK!"
