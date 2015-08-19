@@ -74,7 +74,7 @@ sign()
 sum_and_sign()
 {
 	local what=$1
-	chroot-runcmd $NEWROOT ./$what-sum.sh $CHROOT_SCRIPTDIR
+	chroot-runcmd $NEWROOT "TIMESTATS=$TIMESTATS ./$what-sum.sh" $CHROOT_SCRIPTDIR
 	xz $what-sum
 	sign $what
 }

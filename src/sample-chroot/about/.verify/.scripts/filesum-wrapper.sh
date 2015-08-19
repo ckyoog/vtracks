@@ -10,8 +10,10 @@ for e in $EXCL; do
 done
 EXCL_PATTERN="$p"
 
+TIME=${TIMESTATS:+time}
+
 if [ "$EXCL_PATTERN" ]; then
-	./filesum.sh $INCL | sed -r '\@'"$EXCL_PATTERN"'@d' | sort -k2
+	$TIME ./filesum.sh $INCL | sed -r '\@'"$EXCL_PATTERN"'@d' | sort -k2
 else
-	./filesum.sh $INCL | sort -k2
+	$TIME ./filesum.sh $INCL | sort -k2
 fi
