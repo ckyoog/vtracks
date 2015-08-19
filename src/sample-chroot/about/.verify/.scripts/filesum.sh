@@ -9,8 +9,11 @@ ignore_opt="${o:+-not ( ( $o ) -prune )}"
 
 for i; do
 	if [ -d $i ]; then
-		find -L $i $ignore_opt -not -type d -exec $XSUM '{}' ';'
+		find -L $i $ignore_opt -not -type d -print0
 	else
-		$XSUM $i
+		builtin echo -ne $i'\x00'
 	fi
-done
+done |
+xargs -0 $XSUM		# using `xargs' to do something to a huge set of
+			# files can apparently save very much more time
+			# than doing it to each file
