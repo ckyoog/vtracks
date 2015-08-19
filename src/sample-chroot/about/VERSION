@@ -1,0 +1,5 @@
+sample-chroot-0.7
+
+including
+CE-0.7, Chroot Environment(the others)
+CTCS-0.7, Cross Toolchain and Cross Sysroot(/sample-dev/ and /sample-root/)
