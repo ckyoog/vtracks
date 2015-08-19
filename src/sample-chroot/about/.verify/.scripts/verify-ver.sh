@@ -60,7 +60,7 @@ verify()
 {
 	local what=$1
 	HOME=/home/$GPGUSER gpg --verify $VERIFY_FILE_DIR/$what-sum.xz.enc.gpg-dsig $VERIFY_FILE_DIR/$what-sum.xz.enc
-	sha256sum $VERSION | cut -d' ' -f1 | cat - $VERSION | openssl enc -aes-256-cfb -d -in $VERIFY_FILE_DIR/$what-sum.xz.enc -out $what-sum.xz -pass stdin
+	sha256sum $VERSION | cut -d' ' -f1 | cat - $VERSION | openssl enc -aes-256-cfb -d -in $VERIFY_FILE_DIR/$what-sum.xz.enc -out $what-sum.xz -pass stdin -nosalt # -nosalt should not have been used, nevertheless, my purpose is not encrypt, so it is not a big deal. using it can keep encrypt result same as long as password is same.
 	unxz $what-sum.xz
 	mv $what-sum /tmp/$what-sum.ref
 

@@ -62,7 +62,7 @@ sign()
 	HOME=/home/$GPGUSER gpg --yes -u 'FortiDDoS Chroot' --output $VERIFY_FILE_DIR/`basename $VERSION`.gpg --sign $VERSION
 
 	local what=$1
-	sha256sum $VERSION | cut -d' ' -f1 | cat - $VERSION | openssl enc -aes-256-cfb -in $what-sum.xz -out $what-sum.xz.enc -pass stdin
+	sha256sum $VERSION | cut -d' ' -f1 | cat - $VERSION | openssl enc -aes-256-cfb -in $what-sum.xz -out $what-sum.xz.enc -pass stdin -nosalt # -nosalt should not have been used, nevertheless, my purpose is not encrypt, so it is not a big deal. using it can keep encrypt result same as long as password is same.
 	rm $what-sum.xz
 	HOME=/home/$GPGUSER gpg -u 'FortiDDoS Chroot' --output $what-sum.xz.enc.gpg-dsig --detach-sign $what-sum.xz.enc
 
@@ -82,7 +82,7 @@ sum_and_sign()
 resign()
 {
 	local what=$1
-	sha256sum $LASTVER | cut -d' ' -f1 | cat - $LASTVER | openssl enc -aes-256-cfb -d -in $VERIFY_FILE_DIR/$what-sum.xz.enc -out $what-sum.xz -pass stdin
+	sha256sum $LASTVER | cut -d' ' -f1 | cat - $LASTVER | openssl enc -aes-256-cfb -d -in $VERIFY_FILE_DIR/$what-sum.xz.enc -out $what-sum.xz -pass stdin -nosalt # -nosalt should not have been used, nevertheless, my purpose is not encrypt, so it is not a big deal. using it can keep encrypt result same as long as password is same.
 	rm $LASTVER
 	unxz -t $what-sum.xz
 	sign $what
