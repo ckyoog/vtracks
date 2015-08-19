@@ -12,7 +12,7 @@ if [ $THISDIR != $PWD ]; then
 fi
 # Get super user privilege by sudo
 [ `id -u` = 0 -a "$1" != RoOt ] || {
-[ "$1" != RoOt ] && { exec sudo $0 RoOt "$@" || exit; }
+[ "$1" != RoOt ] && { exec sudo -E $0 RoOt "$@" || exit; }
 [ `id -u` != 0 ] && { echo need root privilege >&2; exit 1; }
 shift
 }
