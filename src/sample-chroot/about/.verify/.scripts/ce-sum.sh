@@ -7,4 +7,5 @@ export INCL="/bin /sbin /lib* /usr /var/db/pkg /about/.verify/.scripts /chroot.s
 export SKIP=tmp		# This will tell filesum.sh to skip the names in SKIP
 
 # can not output to cwd because cwd will be sum'ed too
-./filesum-wrapper.sh > ce-sum
+./filesum-wrapper.sh > /tmp/ce-sum
+mv /tmp/ce-sum .
