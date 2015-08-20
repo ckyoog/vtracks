@@ -122,7 +122,15 @@ make_delta_script()
 
 	local BIN_BEGIN_FLAG=___ARCHIVE_BELOW___
 
-	tar -cJvf $BF.xz -T $COPY_FILE_LIST
+	if [ $PRESERVE_SOCKET ]; then
+		# cpio does not ignore socket file while tar does
+		packcmd="eval (cd $NEWDIR && xargs -r find | cpio -ov)"
+		unpackcmd='(cd $DESTDIR && cpio -ivu)' # never need '-d'
+	else
+		packcmd="tar -C $NEWDIR --index-file=/dev/stderr -cvf /dev/stdout -T -"
+		unpackcmd='tar -C $DESTDIR -xvf -'
+	fi
+	sed -r "s@$NEWDIR/@@" $COPY_FILE_LIST | $packcmd | xz > $BF.xz
 	cat - $BF.xz >$DELTA_SCRIPT <<-eof
 		#!/bin/bash
 		set -e
@@ -130,7 +138,7 @@ make_delta_script()
 		cat <<EOF | xargs rm -rf
 		$(sed "s|^$OLDDIR/|\$DESTDIR/|" $DEL_FILE_LIST)
 		EOF
-		sed '0,/^$BIN_BEGIN_FLAG$/d' \$0 | tar -xJvf - -C \$DESTDIR --strip-components=1
+		sed '0,/^$BIN_BEGIN_FLAG$/d' \$0 | unxz | $unpackcmd
 		exit
 		$BIN_BEGIN_FLAG
 	eof
