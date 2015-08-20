@@ -111,7 +111,7 @@ make_batch_file()
 			echo $NEW >> $COPY_FILE_LIST
 		else
 			echo "Line not recognized, \"$l\""
-			exit
+			exit 1
 		fi
 	done
 }
