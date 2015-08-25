@@ -37,7 +37,7 @@ fetch_two_filenames()
 {
 	local l=$1 p1 p2
 
-	p1='^File (.+) is a (.+ special file|fifo|socket) while file (.+) is a (.+ special file|fifo|socket)$'
+	p1='^File (.+) is a ((.+ special|regular( empty)*) file|fifo|socket) while file (.+) is a ((.+ special|regular( empty)*) file|fifo|socket)$'
 	p2='^(Files|Symbolic links) (.+) and (.+) differ$'
 	if [[ "$l" =~ $p1 ]]; then
 		IS_SPECIAL=1
@@ -45,11 +45,11 @@ fetch_two_filenames()
 		f=${BASH_REMATCH[1]}
 		NEW=$f
 		
-		f=${BASH_REMATCH[3]}
+		f=${BASH_REMATCH[5]}
 		OLD=$f
 
 		NEW_DEVTYPE="${BASH_REMATCH[2]}"
-		OLD_DEVTYPE="${BASH_REMATCH[4]}"
+		OLD_DEVTYPE="${BASH_REMATCH[6]}"
 	elif [[ "$l" =~ $p2 ]]; then
 		IS_SPECIAL=0
 
@@ -102,9 +102,7 @@ make_batch_file()
 			fi
 		elif [ $NEW ]; then
 			if [ x$IS_SPECIAL = x1 ]; then
-				if [ "$NEW_DEVTYPE" = fifo -o "$NEW_DEVTYPE" = socket ]; then
-					continue
-				elif [ "$NEW_DEVTYPE" = "$OLD_DEVTYPE" ] && dev_num_same; then
+				if [ "$NEW_DEVTYPE" = "$OLD_DEVTYPE" ] && dev_num_same; then
 					continue
 				fi
 			fi
