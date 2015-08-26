@@ -89,8 +89,9 @@ dev_num_same()
 
 make_batch_file()
 {
-	rm -f $COPY_FILE_LIST
-	rm -f $DEL_FILE_LIST
+	# Assure the both files exist, but empty.
+	echo -n > $COPY_FILE_LIST
+	echo -n > $DEL_FILE_LIST
 
 	local l
 	diff -rq --no-dereference $NEWDIR $OLDDIR |
