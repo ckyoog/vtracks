@@ -125,7 +125,7 @@ make_delta_script()
 		exit
 	fi
 
-	local DELTA_SCRIPT=$DIRBASE-delta-update-$VER_FROMTO.sh
+	local DELTA_SCRIPT=`basename $DIRBASE`-delta-update-$VER_FROMTO.sh
 
 	local BIN_BEGIN_FLAG=___ARCHIVE_BELOW___
 
@@ -141,7 +141,7 @@ make_delta_script()
 	cat - $BF.xz >$DELTA_SCRIPT <<-eof
 		#!/bin/bash
 		set -e
-		DESTDIR=\${1:-$DIRBASE}
+		DESTDIR=\${1:-`basename $DIRBASE`}
 		cat <<EOF | xargs rm -rf
 		$(sed "s|^$OLDDIR/|\$DESTDIR/|" $DEL_FILE_LIST)
 		EOF
