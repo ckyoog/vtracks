@@ -2,12 +2,13 @@
 set -e
 
 VER_FROMTO=$1
-BF=${3:-.foo}
 
 DEFBASE=sample-chroot
 DIRBASE=${2:-$DEFBASE}
 NEWDIR=$DIRBASE.new
 OLDDIR=$DIRBASE
+
+INTERMDIR=${3:-.} #/tmp
 
 ls -d $NEWDIR $OLDDIR >/dev/null
 
@@ -22,8 +23,10 @@ usage()
 	eof
 }
 
-COPY_FILE_LIST=.copy-file-list
-DEL_FILE_LIST=.del-file-list
+MAGICSTR=`basename $0 .sh`
+BF=$INTERMDIR/.${MAGICSTR}.foo
+COPY_FILE_LIST=$INTERMDIR/.${MAGICSTR}.copy-file-list
+DEL_FILE_LIST=$INTERMDIR/.${MAGICSTR}.del-file-list
 
 fetch_only_filename()
 {
@@ -94,6 +97,7 @@ make_batch_file()
 	echo -n > $DEL_FILE_LIST
 
 	local l
+	# do not use -x(--exclude), which makes diff slow
 	diff -rq --no-dereference $NEWDIR $OLDDIR |
 	while read -r l; do
 		fetch_filename "$l"
