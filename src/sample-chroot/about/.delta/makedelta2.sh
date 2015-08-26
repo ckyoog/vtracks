@@ -119,6 +119,12 @@ make_batch_file()
 
 make_delta_script()
 {
+	if [ ! -s $COPY_FILE_LIST -a ! -s $DEL_FILE_LIST ]; then
+		rm $COPY_FILE_LIST $DEL_FILE_LIST
+		echo There is no changes, nothing to do.
+		exit
+	fi
+
 	local DELTA_SCRIPT=$DIRBASE-delta-update-$VER_FROMTO.sh
 
 	local BIN_BEGIN_FLAG=___ARCHIVE_BELOW___
