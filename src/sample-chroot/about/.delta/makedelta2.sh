@@ -42,7 +42,7 @@ fetch_two_filenames()
 {
 	local l=$1 p1 p2
 
-	p1='^File (.+) is a ((.+ special|regular( empty)*) file|fifo|socket) while file (.+) is a ((.+ special|regular( empty)*) file|fifo|socket)$'
+	p1='^File (.+) is a ((.+ special|regular( empty)*) file|fifo|socket|symbolic link) while file (.+) is a ((.+ special|regular( empty)*) file|fifo|socket|symbolic link)$'
 	p2='^(Files|Symbolic links) (.+) and (.+) differ$'
 	if [[ "$l" =~ $p1 ]]; then
 		IS_SPECIAL=1
