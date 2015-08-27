@@ -18,7 +18,7 @@ _FILESUM_DEFPATH=`dirname $0`/$_FILESUM_RELPATH
 #	[ `basename $0` = $0 ] && _FILESUM_DEFPATH=filesum.sh
 FILESUM_SCRIPT=$(readlink -m ${FILESUM_SCRIPT:-$_FILESUM_DEFPATH})
 
-is_special()
+could_be_same()
 {
 	NEW_DEVTYPE=
 	OLD_DEVTYPE=
@@ -48,7 +48,7 @@ validate()
 	diff -rq --no-dereference $NEWDIR $OLDDIR | {
 	hasdiff=false
 	while read -r l; do
-		if is_special "$l" &&
+		if could_be_same "$l" &&
 		    [ "$NEW_DEVTYPE" = "$OLD_DEVTYPE" ] && dev_num_same; then
 			continue
 		fi

@@ -48,7 +48,7 @@ fetch_two_filenames()
 	p3='^(File) (.+) is a .+ while file (.+) is a .+$'
 	p2='^(Files|Symbolic links) (.+) and (.+) differ$'
 	if [[ "$l" =~ $p1 ]]; then
-		IS_SPECIAL=1
+		COULD_BE_SAME=1
 		NEW=${BASH_REMATCH[1]}
 		OLD=${BASH_REMATCH[3]}
 		NEW_DEVTYPE="${BASH_REMATCH[2]}"
@@ -67,7 +67,7 @@ fetch_filename()
 	OLD=
 	NEW_DEVTYPE=
 	OLD_DEVTYPE=
-	IS_SPECIAL=
+	COULD_BE_SAME=
 
 	local l=$1
 	if [[ "$l" =~ ^Only ]]; then
@@ -101,7 +101,7 @@ make_batch_file()
 				echo $ONLY >> $DEL_FILE_LIST
 			fi
 		elif [ $NEW ]; then
-			if [ x$IS_SPECIAL = x1 ]; then
+			if [ x$COULD_BE_SAME = x1 ]; then
 				if [ "$NEW_DEVTYPE" = "$OLD_DEVTYPE" ] && dev_num_same; then
 					continue
 				fi
