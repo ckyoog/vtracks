@@ -40,29 +40,22 @@ fetch_only_filename()
 
 fetch_two_filenames()
 {
-	local l=$1 p1 p2
+	local l=$1 p1 p2 p3
 
-	p1='^File (.+) is a ((.+ special|regular( empty)*) file|fifo|socket|symbolic link) while file (.+) is a ((.+ special|regular( empty)*) file|fifo|socket|symbolic link)$'
+	# I don't need to match "regular file" or "symbolic link", because once one of them appears, that means they must be different
+	#p1='^File (.+) is a ((.+ special|regular( empty)*) file|fifo|socket|symbolic link) while file (.+) is a ((.+ special|regular( empty)*) file|fifo|socket|symbolic link)$'
+	p1='^File (.+) is a (.+ special file|fifo|socket) while file (.+) is a (.+ special file|fifo|socket)$'
+	p3='^(File) (.+) is a .+ while file (.+) is a .+$'
 	p2='^(Files|Symbolic links) (.+) and (.+) differ$'
 	if [[ "$l" =~ $p1 ]]; then
 		IS_SPECIAL=1
-
-		f=${BASH_REMATCH[1]}
-		NEW=$f
-		
-		f=${BASH_REMATCH[5]}
-		OLD=$f
-
+		NEW=${BASH_REMATCH[1]}
+		OLD=${BASH_REMATCH[3]}
 		NEW_DEVTYPE="${BASH_REMATCH[2]}"
-		OLD_DEVTYPE="${BASH_REMATCH[6]}"
-	elif [[ "$l" =~ $p2 ]]; then
-		IS_SPECIAL=0
-
-		f=${BASH_REMATCH[2]}
-		NEW=$f
-
-		f=${BASH_REMATCH[3]}
-		OLD=$f
+		OLD_DEVTYPE="${BASH_REMATCH[4]}"
+	elif [[ "$l" =~ $p3 ]] || [[ "$l" =~ $p2 ]]; then
+		NEW=${BASH_REMATCH[2]}
+		OLD=${BASH_REMATCH[3]}
 	fi
 }
 

@@ -18,39 +18,22 @@ _FILESUM_DEFPATH=`dirname $0`/$_FILESUM_RELPATH
 #	[ `basename $0` = $0 ] && _FILESUM_DEFPATH=filesum.sh
 FILESUM_SCRIPT=$(readlink -m ${FILESUM_SCRIPT:-$_FILESUM_DEFPATH})
 
-fetch_two_filenames()
+is_special()
 {
-	local l=$1 p1 p2
-
-	p1='^File (.+) is a ((.+ special|regular( empty)*) file|fifo|socket) while file (.+) is a ((.+ special|regular( empty)*) file|fifo|socket)$'
-	if [[ "$l" =~ $p1 ]]; then
-		IS_SPECIAL=1
-
-		f=${BASH_REMATCH[1]}
-		NEW=$f
-		
-		f=${BASH_REMATCH[5]}
-		OLD=$f
-
-		NEW_DEVTYPE="${BASH_REMATCH[2]}"
-		OLD_DEVTYPE="${BASH_REMATCH[6]}"
-	fi
-}
-
-fetch_filename()
-{
-	ONLY=
-	INNEW=
-	NEW=
-	OLD=
 	NEW_DEVTYPE=
 	OLD_DEVTYPE=
-	IS_SPECIAL=
 
-	local l=$1
-	if ! [[ "$l" =~ ^Only ]]; then
-		fetch_two_filenames "$l"
+	local l=$1 p ret=false
+
+	p='^File (.+) is a (.+ special file|fifo|socket) while file (.+) is a (.+ special file|fifo|socket)$'
+	if [[ "$l" =~ $p ]]; then
+		ret=true
+		NEW=${BASH_REMATCH[1]}
+		OLD=${BASH_REMATCH[3]}
+		NEW_DEVTYPE="${BASH_REMATCH[2]}"
+		OLD_DEVTYPE="${BASH_REMATCH[4]}"
 	fi
+	$ret
 }
 
 dev_num_same()
@@ -65,8 +48,7 @@ validate()
 	diff -rq --no-dereference $NEWDIR $OLDDIR | {
 	hasdiff=false
 	while read -r l; do
-		fetch_filename "$l"
-		if [ x$IS_SPECIAL = x1 ] &&
+		if is_special "$l" &&
 		    [ "$NEW_DEVTYPE" = "$OLD_DEVTYPE" ] && dev_num_same; then
 			continue
 		fi
