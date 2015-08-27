@@ -9,7 +9,7 @@ DIRBASE=${2:-$DEFBASE}
 NEWDIR=$DIRBASE.new
 OLDDIR=$DIRBASE
 
-ls -d $NEWDIR $OLDDIR >/dev/null
+ls -d $NEWDIR/ $OLDDIR/ >/dev/null
 
 usage()
 {

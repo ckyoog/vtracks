@@ -10,7 +10,7 @@ OLDDIR=$DIRBASE
 
 INTERMDIR=${3:-.} #/tmp
 
-ls -d $NEWDIR $OLDDIR >/dev/null
+ls -d $NEWDIR/ $OLDDIR/ >/dev/null
 
 usage()
 {
