@@ -139,7 +139,7 @@ make_delta_script()
 		#!/bin/bash
 		set -e
 		DESTDIR=\${1:-`basename $DIRBASE`}
-		cat <<EOF | xargs rm -rf
+		cat <<EOF | xargs rm -rfv
 		$(sed "s|^$OLDDIR/|\$DESTDIR/|" $DEL_FILE_LIST)
 		EOF
 		sed '0,/^$BIN_BEGIN_FLAG$/d' \$0 | unxz | $unpackcmd
