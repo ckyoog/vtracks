@@ -126,21 +126,35 @@ make_delta_script()
 
 	if [ $PRESERVE_SOCKET ]; then
 		# cpio does not ignore socket file while tar does
-		packcmd="eval (cd $NEWDIR && xargs -r find | cpio -ov)"
-		unpackcmd='(cd $DESTDIR && cpio -ivu)' # never need '-d'
+		packcmd="eval cd $NEWDIR && xargs -r find | cpio -ov"
+		unpackcmd='cd $DESTDIR && cpio -vu' # never need '-d'
+		opt_list=-t
+		opt_extract=-i
 	else
 		packcmd="tar -C $NEWDIR --index-file=/dev/stderr -cvf /dev/stdout -T -"
-		unpackcmd='tar -C $DESTDIR -xvf -'
+		unpackcmd='tar -C $DESTDIR -vf -'
+		opt_list=-t
+		opt_extract=-x
 	fi
-	sed -r "s@$NEWDIR/@@" $COPY_FILE_LIST | $packcmd | xz > $BF.xz
+	sed -r "s@$NEWDIR/@@" $COPY_FILE_LIST | ($packcmd) | xz > $BF.xz
+	#{ DIR=/tmp/.`basename \$0`.`date +%Z_%Y_%m_%d_%W_%u_%H_%M_%S_%N`; mkdir $DIR; }
+	#DIR=`mktemp -d --tmpdir .tmp.XXXXXXXXXX`
 	cat - $BF.xz >$DELTA_SCRIPT <<-eof
 		#!/bin/bash
 		set -e
+		PKG_OPT=$opt_extract
+		RM_CMD="xargs rm -rfv"
 		DESTDIR=\${1:-`basename $DIRBASE`}
-		cat <<EOF | xargs rm -rfv
-		$(sed "s|^$OLDDIR/|\$DESTDIR/|" $DEL_FILE_LIST)
+		[ "\$1" = -n ] && DRYRUN=1
+		[ x\$DRYRUN = x1 ] && { DESTDIR=/tmp; PKG_OPT=$opt_list; RM_CMD="eval sed 's/^/rm -rfv /'";
+		echo -e 'FILES to be deleted ...\n==============================='; }
+		cd \$DESTDIR
+		cat <<EOF | \$RM_CMD
+		$(sed "s|^$OLDDIR/||" $DEL_FILE_LIST)
 		EOF
-		sed '0,/^$BIN_BEGIN_FLAG$/d' \$0 | unxz | $unpackcmd
+		cd - >/dev/null
+		[ x\$DRYRUN = x1 ] && echo -e '\nFILES to be added ...\n==============================='
+		sed '0,/^$BIN_BEGIN_FLAG$/d' \$0 | unxz | ($unpackcmd \$PKG_OPT)
 		exit
 		$BIN_BEGIN_FLAG
 	eof
