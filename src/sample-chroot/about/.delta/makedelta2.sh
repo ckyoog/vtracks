@@ -10,8 +10,6 @@ OLDDIR=$DIRBASE
 
 INTERMDIR=${3:-.} #/tmp
 
-ls -d $NEWDIR/ $OLDDIR/ >/dev/null
-
 usage()
 {
 	cat <<-eof
@@ -152,6 +150,8 @@ make_delta_script()
 }
 
 ! [ $1 ] && { usage; exit 1; }
+
+ls -d $NEWDIR/ $OLDDIR/ >/dev/null
 
 make_batch_file
 make_delta_script
