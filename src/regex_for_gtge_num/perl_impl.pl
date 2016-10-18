@@ -103,6 +103,77 @@ sub level1_1
     print("$num_regstr\n");
 }
 
+# Smarter than level1_0, no ending suffix and '{1}'
+sub level2_0
+{
+    my ($num, $ge) = @_;
+    my $strlen = length($num);
+    my $regstr = "[1-9]$DIGIT_CLASS\{$strlen,}";
+    my $prefix = "|";
+    for my $i (1..$strlen) {
+        my $l = $strlen - $i;
+        my $d = substr($num, $i - 1, 1);
+        if ($d == 9 && !($l == 0 && $ge)) {
+            goto loop_end;
+        }
+        my $start = $l == 0 && $ge ? $d : $d + 1;
+        my $suffix;
+        if ($l != 0) {
+            $suffix = $l == 1 ? "$DIGIT_CLASS" : "$DIGIT_CLASS\{$l}";
+        } else {
+            $suffix = "";
+        }
+        $regstr = join('', $regstr, $prefix, get_range($start), $suffix);
+loop_end:
+        $prefix = join('', $prefix, $d);
+    }
+    my $num_regstr = "($regstr)";
+    print("$num_regstr\n");
+}
+
+# Optimized level2_0, no need to check for suffix in loop over and over again
+sub level2_1
+{
+    my ($num, $ge) = @_;
+    my $strlen = length($num);
+    my $regstr = "";
+    my $prefix = "";
+    my ($d, $suffix, $next_prefix) = (0, "$DIGIT_CLASS\{$strlen,}", "|");
+
+    # The first part of the regular expression.
+    $regstr = join('', $regstr, $prefix, get_range($d + 1), $suffix);
+    $d = 9; #skip next make-regstr
+
+    # The middle digit (may not exist).
+    for my $i (1..($strlen - 1)) {
+        if ($d != 9) {
+            $regstr = join('', $regstr, $prefix, get_range($d + 1), $suffix);
+        }
+        my $l = $strlen - $i;
+        $d = substr($num, $i - 1, 1);
+        $prefix = $next_prefix;
+        $suffix = "${DIGIT_CLASS}\{$l}";
+        $next_prefix = join('', $next_prefix, $d);
+    }
+
+    # The second digit to last, which is worked out in above loop (may not exist).
+    if ($d != 9) {
+        $regstr = join('', $regstr, $prefix, get_range($d + 1), $DIGIT_CLASS);
+    }
+
+    # The last digit.
+    $d = substr($num, $strlen - 1, 1);
+    $prefix = $next_prefix;
+    if ($d != 9 || $ge) {
+        $regstr = join('', $regstr, $prefix, get_range($ge ? $d : $d + 1));
+    }
+
+    my $num_regstr = "($regstr)";
+    print("$num_regstr\n");
+}
+
 level0_0(@ARGV);
 level1_0(@ARGV);
 level1_1(@ARGV);
+level2_0(@ARGV);
+level2_1(@ARGV);
