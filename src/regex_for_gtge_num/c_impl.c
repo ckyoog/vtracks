@@ -125,19 +125,19 @@ loop_end:
 
 char *level1_1_s(char *num, size_t len, int ge, char *regstr, size_t *reglen)
 {
-	char prefix[128] = LEFT_PARENTHESIS;
+	char prefix[128] = INIT_PREFIX;	//instead of LEFT_PARENTHESIS, keep same with next_prefix
 	char next_prefix[128] = INIT_PREFIX;
 	int next_prefix_len = sizeof(INIT_PREFIX) - 1;	//avoid calling strlen()
 	char d = 0;
 	int i, oreglen = *reglen, l = len;
-	*reglen = sprintf(regstr, MAKEREGSTR(INIT_SUFFIX_FMT, prefix, d + 1, l));
+	*reglen = sprintf(regstr, MAKEREGSTR(INIT_SUFFIX_FMT, LEFT_PARENTHESIS, d + 1, l));
 	d = 9;	//skip next make-regstr;
 	for (i = 0; i < len; ++i) {
 		if (d != 9)
 			*reglen += snprintf(regstr + *reglen, oreglen - *reglen, MAKEREGSTR(SUFFIX_FMT, prefix, d + 1, l));
 		l = len - i - 1;
 		d = cton(num[i]);
-		memcpy(prefix, next_prefix, next_prefix_len + 1);	//strcpy()
+		prefix[next_prefix_len-1] = next_prefix[next_prefix_len-1]; prefix[next_prefix_len] = 0; //avoid calling memcpy()/strcpy()
 		next_prefix[next_prefix_len++] = ntoc(d);
 		next_prefix[next_prefix_len] = 0;
 	}
@@ -170,13 +170,13 @@ loop_end:
 
 char *level2_1_s(char *num, size_t len, int ge, char *regstr, size_t *reglen)
 {
-	char prefix[128] = LEFT_PARENTHESIS;
+	char prefix[128] = INIT_PREFIX;	//instead of LEFT_PARENTHESIS, keep same with next_prefix
 	char next_prefix[128] = INIT_PREFIX;
 	int next_prefix_len = sizeof(INIT_PREFIX) - 1;	//avoid calling strlen()
 	char d = 0;
 	int i, oreglen = *reglen, l = len;
 
-	*reglen = sprintf(regstr, MAKEREGSTR(INIT_SUFFIX_FMT, prefix, d + 1, l));
+	*reglen = sprintf(regstr, MAKEREGSTR(INIT_SUFFIX_FMT, LEFT_PARENTHESIS, d + 1, l));
 	d = 9;	//skip next make-regstr;
 
 	for (i = 0; i < len - 1; ++i) {
@@ -184,7 +184,7 @@ char *level2_1_s(char *num, size_t len, int ge, char *regstr, size_t *reglen)
 			*reglen += snprintf(regstr + *reglen, oreglen - *reglen, MAKEREGSTR(SUFFIX_FMT, prefix, d + 1, l));
 		l = len - i - 1;
 		d = cton(num[i]);
-		memcpy(prefix, next_prefix, next_prefix_len + 1);	//strcpy()
+		prefix[next_prefix_len-1] = next_prefix[next_prefix_len-1]; prefix[next_prefix_len] = 0; //avoid calling memcpy()/strcpy()
 		next_prefix[next_prefix_len++] = ntoc(d);
 		next_prefix[next_prefix_len] = 0;
 	}
@@ -193,7 +193,7 @@ char *level2_1_s(char *num, size_t len, int ge, char *regstr, size_t *reglen)
 		*reglen += snprintf(regstr + *reglen, oreglen - *reglen, MAKEREGSTR(DIGIT_CLASS, prefix, d + 1));
 
 	d = cton(num[len - 1]);
-	memcpy(prefix, next_prefix, next_prefix_len + 1);	//strcpy()
+	prefix[next_prefix_len-1] = next_prefix[next_prefix_len-1]; prefix[next_prefix_len] = 0; //avoid calling memcpy()/strcpy()
 	if (d != 9 || ge)
 		*reglen += snprintf(regstr + *reglen, oreglen - *reglen, MAKEREGSTR(RIGHT_PARENTHESIS, prefix, ge ? d : d + 1));
 
