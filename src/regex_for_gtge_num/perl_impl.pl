@@ -46,8 +46,7 @@ sub level0_0
 loop_end:
         $prefix = join('', $prefix, $d);
     }
-    my $num_regstr = "($regstr)";
-    print("$num_regstr\n");
+    return "($regstr)";
 }
 
 # Smarter than level0_0, no ending suffix
@@ -74,8 +73,7 @@ sub level1_0
 loop_end:
         $prefix = join('', $prefix, $d);
     }
-    my $num_regstr = "($regstr)";
-    print("$num_regstr\n");
+    return "($regstr)";
 }
 
 # Optimized level1_0, no need to check for suffix in loop over and over again
@@ -99,8 +97,7 @@ sub level1_1
     if ($d != 9 || $ge) {
         $regstr = join('', $regstr, $prefix, get_range($ge ? $d : $d + 1));
     }
-    my $num_regstr = "($regstr)";
-    print("$num_regstr\n");
+    return "($regstr)";
 }
 
 # Smarter than level1_0, no ending suffix and '{1}'
@@ -127,8 +124,7 @@ sub level2_0
 loop_end:
         $prefix = join('', $prefix, $d);
     }
-    my $num_regstr = "($regstr)";
-    print("$num_regstr\n");
+    return "($regstr)";
 }
 
 # Optimized level2_0, no need to check for suffix in loop over and over again
@@ -168,12 +164,11 @@ sub level2_1
         $regstr = join('', $regstr, $prefix, get_range($ge ? $d : $d + 1));
     }
 
-    my $num_regstr = "($regstr)";
-    print("$num_regstr\n");
+    return "($regstr)";
 }
 
-level0_0(@ARGV);
-level1_0(@ARGV);
-level1_1(@ARGV);
-level2_0(@ARGV);
-level2_1(@ARGV);
+print(level0_0(@ARGV)."\n");
+print(level1_0(@ARGV)."\n");
+print(level1_1(@ARGV)."\n");
+print(level2_0(@ARGV)."\n");
+print(level2_1(@ARGV)."\n");
