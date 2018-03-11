@@ -36,4 +36,5 @@ num_to_mem_for_echo ()
 	#echo $MEM >&2
 }
 
+[ $# -lt 2 ] && { echo 'Usage: '$0' <decimal number> <output bytes: 1|2|4|8> [bigendian: 1]'; exit 0; }
 num_to_mem_for_echo "$@"
