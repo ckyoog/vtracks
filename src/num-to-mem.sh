@@ -1,4 +1,6 @@
 #!/bin/sh
+# TODO
+# This script can be rewritten in a easier way I implement in dtoh.sh
 
 # num_to_mem_for_echo (num, byte_count, is_bigendian=0)
 # the arguments are all string of decimal.
