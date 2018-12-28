@@ -2,6 +2,11 @@ CC=gcc
 OBJ=$(subst .c,.o,$(wildcard *.c))
 EXEC=a.out
 
+CFLAGS-$(PRSETNAME_ASWELL) += -DPRSETNAME_ASWELL
+
+
+CFLAGS=$(CFLAGS-y)
+
 all: $(EXEC)
 
 $(EXEC): $(OBJ)

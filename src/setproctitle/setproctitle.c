@@ -23,6 +23,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#ifdef PRSETNAME_ASWELL
+#include <sys/prctl.h>
+#endif
 
 extern char **environ;
 
@@ -118,4 +121,11 @@ void setproctitle(char *title)
 	if (argv_last - p) {
 		memset(p, 0, argv_last - p);
 	}
+
+#ifdef PRSETNAME_ASWELL
+	if (0 != prctl(PR_SET_NAME, title, 0, 0, 0)) {
+		perror("prctl");
+		exit(1);
+	}
+#endif
 }
