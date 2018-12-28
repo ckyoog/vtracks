@@ -22,4 +22,4 @@ clean:
 
 run: all
 	@./$(EXEC) & \
-	  cat /proc/$$!/cmdline /proc/$$!/comm /proc/$$!/stat /proc/$$!/task/$$!/cmdline /proc/$$!/task/$$!/comm /proc/$$!/task/$$!/stat | tr '\0' '\n'; ps
+	  cat /proc/$$!/cmdline /proc/$$!/comm /proc/$$!/stat /proc/$$!/task/$$!/cmdline /proc/$$!/task/$$!/comm /proc/$$!/task/$$!/stat | tr '\0' '\n'; ps -o pid,tty,time,comm=COMM,cmd=CMDLINE
