@@ -115,6 +115,7 @@ void setproctitle(char *title)
 	p += (sizeof(PROCTITLE_PREFIX) - 1);
 #endif
 
+	/* Changing argv[0] only affects /proc/self/cmdline, but doesn't affect /proc/self/comm */
 	memcpy(p, title, argv_last - p);
 	p += strlen(title);
 
@@ -123,6 +124,7 @@ void setproctitle(char *title)
 	}
 
 #ifdef PRSETNAME_ASWELL
+	/* PR_SET_NAME only affects /proc/self/comm, but doesn't affect /proc/self/cmdline */
 	if (0 != prctl(PR_SET_NAME, title, 0, 0, 0)) {
 		perror("prctl");
 		exit(1);
