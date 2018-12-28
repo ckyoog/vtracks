@@ -3,7 +3,7 @@ OBJ=$(subst .c,.o,$(wildcard *.c))
 EXEC=a.out
 
 # Add whatever MACRO here, that you want to pass to gcc via Makefile comand line, like "make PRSETNAME_ASWELL=y"
-MACRO_LIST = PRSETNAME_ASWELL
+MACRO_LIST = PRSETNAME ARGV0_NOCHANGE
 
 
 # "$(call build-CFLAGS,XXXXXX)" is equivalent to "CFLAGS-$(XXXXXX) += -DXXXXXX"

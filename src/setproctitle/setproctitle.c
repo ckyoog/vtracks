@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#ifdef PRSETNAME_ASWELL
+#ifdef PRSETNAME
 #include <sys/prctl.h>
 #endif
 
@@ -116,14 +116,16 @@ void setproctitle(char *title)
 #endif
 
 	/* Changing argv[0] only affects /proc/self/cmdline, but doesn't affect /proc/self/comm */
+#ifndef ARGV0_NOCHANGE
 	memcpy(p, title, argv_last - p);
 	p += strlen(title);
 
 	if (argv_last - p) {
 		memset(p, 0, argv_last - p);
 	}
+#endif
 
-#ifdef PRSETNAME_ASWELL
+#ifdef PRSETNAME
 	/* PR_SET_NAME only affects /proc/self/comm, but doesn't affect /proc/self/cmdline */
 	if (0 != prctl(PR_SET_NAME, title, 0, 0, 0)) {
 		perror("prctl");
