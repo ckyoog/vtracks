@@ -1,12 +1,15 @@
 CC=gcc
 OBJ=$(subst .c,.o,$(wildcard *.c))
+EXEC=a.out
 
-all: $(OBJ)
+all: $(EXEC)
+
+$(EXEC): $(OBJ)
 	$(CC) $(OBJ)
 
 clean:
-	rm -f a.out *.o
+	rm -f $(EXEC) *.o
 
 run: all
-	@./a.out & \
+	@./$(EXEC) & \
 	  cat /proc/$$!/cmdline /proc/$$!/comm /proc/$$!/stat /proc/$$!/task/$$!/cmdline /proc/$$!/task/$$!/comm /proc/$$!/task/$$!/stat | tr '\0' '\n'; ps
