@@ -107,8 +107,10 @@ void setproctitle(char *title)
 	proc_argv[1] = NULL;
 	p = proc_argv[0];
 
+#if 0
 	memcpy(p, PROCTITLE_PREFIX, argv_last - proc_argv[0]);
 	p += (sizeof(PROCTITLE_PREFIX) - 1);
+#endif
 
 	memcpy(p, title, argv_last - p);
 	p += strlen(title);
