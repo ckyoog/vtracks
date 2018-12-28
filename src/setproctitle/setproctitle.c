@@ -74,11 +74,11 @@ int init_setproctitle(char ***argv_p)
 
 	argv_last--;
 
-	new_argv = malloc(i * sizeof(*new_argv));
+	new_argv = malloc(argv_cnt * sizeof(*new_argv));
 	if (new_argv == NULL)
 		return -1;
 
-	p = malloc(size);
+	p = malloc(argv_size);
 	if (p == NULL)
 		return -1;
 
