@@ -127,13 +127,20 @@ void setproctitle(char *title)
 	memcpy(p, title, len);
 	p += len;
 
+	/*
+	 * Clear all other argv and all environ. /proc/self/cmdline will have arg0 (followed by
+	 * a number of '\0' if argv0 is longer than title or there were lots of arguments), and
+	 * /proc/self/environ will have a number of '\0' (preceded by part of title if title is
+	 * longer than argv0 and there was not other arguments).
+	 */
 	if (argv_last - p > 0) {
 		memset(p, 0, argv_last - p);
 	}
 #endif
 
-#ifdef PRSETNAME
 	/* PR_SET_NAME only affects /proc/self/comm, but doesn't affect /proc/self/cmdline */
+#ifdef PRSETNAME
+	/* comm only show 15 chars, so do not add PROCTITLE_PREFIX to comm */
 	if (0 != prctl(PR_SET_NAME, title, 0, 0, 0)) {
 		perror("prctl");
 		exit(1);
