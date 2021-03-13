@@ -107,7 +107,6 @@ void setproctitle(char *title)
 {
 	char *p;
 	int len;
-#define PROCTITLE_PREFIX "keepalived: "
 
 	if (!proc_argv || !argv_last || !succeed || !title || !strlen(title))
 		return;
@@ -115,7 +114,8 @@ void setproctitle(char *title)
 	proc_argv[1] = NULL;
 	p = proc_argv[0];
 
-#if 0
+#define PROCTITLE_PREFIX "keepalived: "
+#if defined(ADD_PREFIX) && defined(PROCTITLE_PREFIX)
 	len = MIN(argv_last - p, sizeof(PROCTITLE_PREFIX) - 1);
 	memcpy(p, PROCTITLE_PREFIX, len);
 	p += len;
