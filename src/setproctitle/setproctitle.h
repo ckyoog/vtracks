@@ -1,3 +1,6 @@
+// This "setproctitile" function is port from nginx to keepalived of FADC by me
+// ----------------------------------------------------------------------------
+
 /*
  * Soft:        Keepalived is a failover program for the LVS project
  *              <www.linuxvirtualserver.org>. It monitor & manipulate
