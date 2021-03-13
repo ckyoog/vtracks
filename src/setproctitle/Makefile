@@ -25,8 +25,10 @@ test: all
 	  cat /proc/$$!/cmdline \
 	      /proc/$$!/comm \
 	      /proc/$$!/stat \
+	      /proc/$$!/environ \
 	      /proc/$$!/task/$$!/cmdline \
 	      /proc/$$!/task/$$!/comm \
 	      /proc/$$!/task/$$!/stat \
+	      /proc/$$!/task/$$!/environ \
 	  | tr '\0' '\n'; \
 	  ps -o pid,tty,time,comm=COMM,cmd=CMDLINE;
