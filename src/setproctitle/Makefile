@@ -30,5 +30,5 @@ test: all
 	      /proc/$$!/task/$$!/comm \
 	      /proc/$$!/task/$$!/stat \
 	      /proc/$$!/task/$$!/environ \
-	  | tr '\0' '\n'; \
+	  | tr '\0' '\n' | cat -s; \
 	  ps -o pid,tty,time,comm=COMM,cmd=CMDLINE;
