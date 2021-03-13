@@ -20,6 +20,13 @@ $(EXEC): $(OBJ)
 clean:
 	rm -f $(EXEC) *.o
 
-run: all
+test: all
 	@./$(EXEC) & \
-	  cat /proc/$$!/cmdline /proc/$$!/comm /proc/$$!/stat /proc/$$!/task/$$!/cmdline /proc/$$!/task/$$!/comm /proc/$$!/task/$$!/stat | tr '\0' '\n'; ps -o pid,tty,time,comm=COMM,cmd=CMDLINE
+	  cat /proc/$$!/cmdline \
+	      /proc/$$!/comm \
+	      /proc/$$!/stat \
+	      /proc/$$!/task/$$!/cmdline \
+	      /proc/$$!/task/$$!/comm \
+	      /proc/$$!/task/$$!/stat \
+	  | tr '\0' '\n'; \
+	  ps -o pid,tty,time,comm=COMM,cmd=CMDLINE;
