@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/param.h>	// for MIN and MAX
 #ifdef PRSETNAME
 #include <sys/prctl.h>
 #endif
@@ -105,25 +106,28 @@ int init_setproctitle(char ***argv_p)
 void setproctitle(char *title)
 {
 	char *p;
+	int len;
 #define PROCTITLE_PREFIX "keepalived: "
 
-	if (!proc_argv || !argv_last || !succeed)
+	if (!proc_argv || !argv_last || !succeed || !title || !strlen(title))
 		return;
 
 	proc_argv[1] = NULL;
 	p = proc_argv[0];
 
 #if 0
-	memcpy(p, PROCTITLE_PREFIX, argv_last - proc_argv[0]);
-	p += (sizeof(PROCTITLE_PREFIX) - 1);
+	len = MIN(argv_last - p, sizeof(PROCTITLE_PREFIX) - 1);
+	memcpy(p, PROCTITLE_PREFIX, len);
+	p += len;
 #endif
 
 	/* Changing argv[0] only affects /proc/self/cmdline, but doesn't affect /proc/self/comm */
 #ifndef ARGV0_NOCHANGE
-	memcpy(p, title, argv_last - p);
-	p += strlen(title);
+	len = MIN(argv_last - p, strlen(title));
+	memcpy(p, title, len);
+	p += len;
 
-	if (argv_last - p) {
+	if (argv_last - p > 0) {
 		memset(p, 0, argv_last - p);
 	}
 #endif
