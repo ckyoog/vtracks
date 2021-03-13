@@ -1,6 +1,6 @@
 CC=gcc
 OBJ=$(subst .c,.o,$(wildcard *.c))
-EXEC=a.out
+EXEC=./a.out
 
 # Add whatever MACRO here, that you want to pass to gcc via Makefile comand line, like "make PRSETNAME_ASWELL=y"
 MACRO_LIST = PRSETNAME ARGV0_NOCHANGE
@@ -21,7 +21,7 @@ clean:
 	rm -f $(EXEC) *.o
 
 test: all
-	@./$(EXEC) & \
+	@$(EXEC) & \
 	  cat /proc/$$!/cmdline \
 	      /proc/$$!/comm \
 	      /proc/$$!/stat \
