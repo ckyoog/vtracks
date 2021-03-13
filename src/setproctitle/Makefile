@@ -21,14 +21,21 @@ clean:
 	rm -f $(EXEC) *.o
 
 test: all
-	@$(EXEC) & \
-	  cat /proc/$$!/cmdline \
-	      /proc/$$!/comm \
-	      /proc/$$!/stat \
-	      /proc/$$!/environ \
-	      /proc/$$!/task/$$!/cmdline \
-	      /proc/$$!/task/$$!/comm \
-	      /proc/$$!/task/$$!/stat \
-	      /proc/$$!/task/$$!/environ \
-	  | tr '\0' '\n' | cat -s; \
-	  ps -o pid,tty,time,comm=COMM,cmd=CMDLINE;
+	@show_test_result() { \
+		cat0() { echo -en cat $$1 '\t'; cat $$1 | wc -c; cat -A $$1; echo -e "\n"; }; \
+		cat1() { echo cat $$1; cat $$1; echo; }; \
+		echo ---------- TEST RESULT ----------; \
+		echo -en $(EXEC) '\t'; echo -en $(EXEC)'\x0' | wc -c; echo; \
+		cat0 /proc/$$!/cmdline; \
+		cat1 /proc/$$!/comm; \
+		cat1 /proc/$$!/stat; \
+		cat0 /proc/$$!/environ; \
+		cat0 /proc/$$!/task/$$!/cmdline; \
+		cat1 /proc/$$!/task/$$!/comm; \
+		cat1 /proc/$$!/task/$$!/stat; \
+		cat0 /proc/$$!/task/$$!/environ; \
+		ps -o pid,tty,time,comm=COMM,cmd=CMDLINE $$!; \
+	} >&2; \
+	$(EXEC) & \
+	sleep 0.01; : wait a sec to let EXEC print first if any; \
+	show_test_result
